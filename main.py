@@ -132,14 +132,6 @@ def create_table_checkpoint() -> None:
     )
     return str(asyncio.run(db_run_query(query)))
 
-def create_checkpoint_in_table(chat_id: int, user_id: int, scenario_id: int):
-    """Добавляет id сценария в таблицу"""
-    
-    query = (
-        'insert into vars (chat_id, user_id, scenario_id) '
-            f'values({chat_id}, {user_id}, {scenario_id})'
-    )
-    return str(asyncio.run(db_run_query(query)))
 
 def get_count_checkpoint_in_table(chat_id: int, user_id: int) -> int:
     """Возвращает количество записей с checkpoint"""
@@ -207,7 +199,7 @@ def save_checkpoint(chat_id: int, user_id: int, scenario_id: int):
         chat_id=chat_id
     )
     if count_checkpoint == 0:
-        create_table_checkpoint(
+        create_checkpoint_in_table(
             chat_id=chat_id,
             user_id=user_id,
             scenario_id=scenario_id
@@ -257,8 +249,6 @@ def processing_contact(message: dict):
         f'''Проблема: {get_var_in_table(chat_id=message['chat']['id'], user_id=message['from']['id'], var_name='problem')}\n\n'''
         f'''tg_info: {message['from']}'''
     )
-    
-    print(text_message)
     
     asyncio.run(TG_BOT.send_message(
         text=text_message,
